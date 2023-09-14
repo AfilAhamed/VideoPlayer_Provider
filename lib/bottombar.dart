@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:videoplayer_miniproject/screens/favorite/favorite_list.dart';
-import 'package:videoplayer_miniproject/screens/video/video_list.dart';
-import 'package:videoplayer_miniproject/screens/chart/chart_screen.dart';
-import 'package:videoplayer_miniproject/screens/settings/settings_screen.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/view/favorite/favorite_list.dart';
+import 'package:videoplayer_miniproject/view/video/video_list.dart';
+import 'package:videoplayer_miniproject/view/chart/chart_screen.dart';
+import 'package:videoplayer_miniproject/view/settings/settings_screen.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -31,8 +32,8 @@ class _BottomBarState extends State<BottomBar> {
             unselectedFontSize: 15,
             selectedFontSize: 15,
             enableFeedback: true,
-            fixedColor: Colors.orange.shade700,
-            backgroundColor: Colors.black,
+            fixedColor: Appcolors.secondaryTheme,
+            backgroundColor: Appcolors.primaryTheme,
             unselectedItemColor: Colors.white,
             items: const [
               BottomNavigationBarItem(

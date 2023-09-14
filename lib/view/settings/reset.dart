@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 import '../../Model/video_model/video_model.dart';
 import '../../model/favorite_model/favorite_model.dart';
@@ -15,7 +16,7 @@ Future<void> resetDB(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: Colors.black,
+        backgroundColor: Appcolors.primaryTheme,
         title: const Text(
           "Confirm Reset",
           style: TextStyle(color: Colors.white),
@@ -28,7 +29,7 @@ Future<void> resetDB(
           TextButton(
             child: Text(
               "Cancel",
-              style: TextStyle(color: Colors.orange.shade700),
+              style: TextStyle(color: Appcolors.secondaryTheme),
             ),
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -37,7 +38,7 @@ Future<void> resetDB(
           TextButton(
             child: Text(
               "Reset",
-              style: TextStyle(color: Colors.orange.shade700),
+              style: TextStyle(color: Appcolors.secondaryTheme),
             ),
             onPressed: () {
               Navigator.of(context).pop(true);

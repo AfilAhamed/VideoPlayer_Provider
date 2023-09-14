@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 
 class About extends StatelessWidget {
   const About({super.key});
@@ -6,11 +7,11 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Appcolors.primaryTheme,
       appBar: AppBar(
         toolbarHeight: 70,
         elevation: 0,
-        backgroundColor: Colors.black,
+        backgroundColor: Appcolors.primaryTheme,
         title: const Text(
           'About',
           style: TextStyle(fontSize: 22),

@@ -4,7 +4,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:videoplayer_miniproject/functions/db_functions/favorite_db_function/favorite_functions.dart';
-import 'package:videoplayer_miniproject/screens/favorite/favorite_player.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/view/favorite/favorite_player.dart';
 import '../../model/favorite_model/favorite_model.dart';
 
 class FavoriteVideoList extends StatefulWidget {
@@ -46,7 +47,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
       backgroundColor: Colors.white,
       appBar: _isSelecting
           ? AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: Appcolors.primaryTheme,
               title: Text('${favSelectedVideos.length} selected'),
               actions: <Widget>[
                 IconButton(
@@ -82,7 +83,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                backgroundColor: Colors.black,
+                                backgroundColor: Appcolors.primaryTheme,
                                 title: const Text(
                                   'Delete Selected Videos',
                                   style: TextStyle(color: Colors.white),
@@ -96,7 +97,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                                     child: Text(
                                       'Cancel',
                                       style: TextStyle(
-                                          color: Colors.orange.shade700),
+                                          color: Appcolors.secondaryTheme),
                                     ),
                                     onPressed: () {
                                       if (_isSelecting) {
@@ -112,7 +113,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                                     child: Text(
                                       'Delete',
                                       style: TextStyle(
-                                          color: Colors.orange.shade700),
+                                          color: Appcolors.secondaryTheme),
                                     ),
                                     onPressed: () {
                                       _favDeleteSelectedVideos();
@@ -130,7 +131,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
             )
           : AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
+              backgroundColor: Appcolors.primaryTheme,
               title: const Text('Favorite'),
             ),
       body: Padding(
@@ -151,7 +152,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                     const Text(
                       'No favorite videos',
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Appcolors.primaryTheme,
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.italic),

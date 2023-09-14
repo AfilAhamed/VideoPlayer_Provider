@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 
 class StatisticsPage extends StatefulWidget {
@@ -35,15 +36,15 @@ class StatisticsPageState extends State<StatisticsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Appcolors.primaryTheme,
         title: const Text('Video Statistics'),
         actions: [
           DropdownButton<String>(
-            iconEnabledColor: Colors.orange,
-            dropdownColor: Colors.black,
+            iconEnabledColor: Appcolors.secondaryTheme,
+            dropdownColor: Appcolors.primaryTheme,
             iconSize: 27,
             style: TextStyle(
-                color: Colors.orange.shade700,
+                color: Appcolors.secondaryTheme,
                 fontSize: 17,
                 fontWeight: FontWeight.bold),
             value: selectedPeriod,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 
 class VideoControls extends StatefulWidget {
   final VideoPlayerController _controller;
@@ -94,7 +95,7 @@ class _VideoControlsState extends State<VideoControls> {
                             colors: VideoProgressColors(
                                 bufferedColor: Colors.white,
                                 backgroundColor: Colors.white,
-                                playedColor: Colors.orange.shade700),
+                                playedColor: Appcolors.secondaryTheme),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 0),
                           ),

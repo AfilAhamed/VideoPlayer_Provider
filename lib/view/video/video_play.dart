@@ -3,19 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
-import 'package:videoplayer_miniproject/model/favorite_model/favorite_model.dart';
-import 'package:videoplayer_miniproject/screens/favorite/favorite_controlls.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/view/video/video_controlls.dart';
+import '../../Model/video_model/video_model.dart';
 
-class FavoritePlayer extends StatefulWidget {
-  final FavoriteVideoModel favModel;
+class VideoPlayerWidget extends StatefulWidget {
+  final VideoModel videoModel;
 
-  const FavoritePlayer(this.favModel, {Key? key}) : super(key: key);
+  const VideoPlayerWidget(this.videoModel, {Key? key}) : super(key: key);
 
   @override
-  FavoritePlayerState createState() => FavoritePlayerState();
+  VideoPlayerWidgetState createState() => VideoPlayerWidgetState();
 }
 
-class FavoritePlayerState extends State<FavoritePlayer> {
+class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _controller;
   bool _controlsVisible = true;
   late Timer _controlsTimer;
@@ -23,13 +24,12 @@ class FavoritePlayerState extends State<FavoritePlayer> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.file(File(widget.favModel.favvideoPath))
+    _controller = VideoPlayerController.file(File(widget.videoModel.videoPath))
       ..initialize().then((_) {
         _controller.play();
         setState(() {});
       });
-
-    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       setState(() {
         _controlsVisible = false;
       });
@@ -41,7 +41,7 @@ class FavoritePlayerState extends State<FavoritePlayer> {
       _controlsVisible = !_controlsVisible;
       if (_controlsVisible) {
         _controlsTimer.cancel();
-        _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+        _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
           setState(() {
             _controlsVisible = false;
           });
@@ -53,7 +53,7 @@ class FavoritePlayerState extends State<FavoritePlayer> {
   //reset the controls timer
   void _resetControlsTimer() {
     _controlsTimer.cancel();
-    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       setState(() {
         _controlsVisible = false;
       });
@@ -65,6 +65,24 @@ class FavoritePlayerState extends State<FavoritePlayer> {
     _controller.dispose();
     _controlsTimer.cancel();
     super.dispose();
+  }
+
+  //Double tap function----------------
+
+  void _handleDoubleTap(bool forward) {
+    final currentPosition = _controller.value.position;
+    final seekTime = forward ? 10 : -10;
+    final newPosition = currentPosition + Duration(seconds: seekTime);
+
+    final videoDuration = _controller.value.duration;
+
+    final clampedPosition = newPosition > Duration.zero
+        ? (newPosition < videoDuration ? newPosition : videoDuration)
+        : Duration.zero;
+
+    _controller.seekTo(clampedPosition);
+
+    _resetControlsTimer();
   }
 
   @override
@@ -82,6 +100,8 @@ class FavoritePlayerState extends State<FavoritePlayer> {
         return true; // Allow default back button behavior
       },
       child: GestureDetector(
+        onDoubleTapDown: (details) => _handleDoubleTap(
+            details.localPosition.dx >= MediaQuery.of(context).size.width / 2),
         onTap: () {
           setState(() {
             _toggleControls();
@@ -89,7 +109,7 @@ class FavoritePlayerState extends State<FavoritePlayer> {
           });
         },
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: Appcolors.primaryTheme,
           body: Stack(
             children: [
               Padding(
@@ -125,13 +145,13 @@ class FavoritePlayerState extends State<FavoritePlayer> {
                             },
                             icon: const Icon(Icons.arrow_back)),
                         title: Text(
-                          widget.favModel.favname,
+                          widget.videoModel.name,
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
                       Expanded(child: Container()), // Space
 
-                      FavoriteControlls(
+                      VideoControls(
                           _controller), //  video controls class called here
                     ],
                   ),

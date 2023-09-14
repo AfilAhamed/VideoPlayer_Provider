@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:videoplayer_miniproject/functions/utility_functions/video_function/video.dart';
-import 'package:videoplayer_miniproject/screens/mini_Screens/search.dart';
-import 'package:videoplayer_miniproject/screens/video/video_play.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/view/mini_Screens/search.dart';
+import 'package:videoplayer_miniproject/view/video/video_play.dart';
 import 'package:videoplayer_miniproject/functions/db_functions/video_db_function/db_functions.dart';
 import '../../Model/video_model/video_model.dart';
 import 'package:lottie/lottie.dart';
@@ -48,7 +49,7 @@ class _VideoListState extends State<VideoList> {
       backgroundColor: Colors.white,
       appBar: _isSelecting
           ? AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: Appcolors.primaryTheme,
               title: Text('${selectedVideos.length} selected'),
               actions: <Widget>[
                 IconButton(
@@ -98,7 +99,7 @@ class _VideoListState extends State<VideoList> {
                                     child: Text(
                                       'Cancel',
                                       style: TextStyle(
-                                          color: Colors.orange.shade700),
+                                          color: Appcolors.secondaryTheme),
                                     ),
                                     onPressed: () {
                                       if (_isSelecting) {
@@ -114,7 +115,7 @@ class _VideoListState extends State<VideoList> {
                                     child: Text(
                                       'Delete',
                                       style: TextStyle(
-                                          color: Colors.orange.shade700),
+                                          color: Appcolors.secondaryTheme),
                                     ),
                                     onPressed: () {
                                       _deleteSelectedVideos();
@@ -132,7 +133,7 @@ class _VideoListState extends State<VideoList> {
             )
           : AppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
+              backgroundColor: Appcolors.primaryTheme,
               actions: [
                 IconButton(
                     onPressed: () {
@@ -144,7 +145,7 @@ class _VideoListState extends State<VideoList> {
                     },
                     icon: Icon(
                       Icons.search_outlined,
-                      color: Colors.orange.shade700,
+                      color: Appcolors.secondaryTheme,
                       size: 30,
                     )),
                 const SizedBox(
@@ -172,7 +173,7 @@ class _VideoListState extends State<VideoList> {
                   const Text(
                     'Video is Empty',
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Appcolors.primaryTheme,
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
@@ -232,7 +233,7 @@ class _VideoListState extends State<VideoList> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    backgroundColor: Colors.black,
+                                    backgroundColor: Appcolors.primaryTheme,
                                     title: Text(
                                       'Enter new name for ${video.name}',
                                       style:
@@ -242,29 +243,30 @@ class _VideoListState extends State<VideoList> {
                                       key: _formKey,
                                       child: TextFormField(
                                         style: const TextStyle(
-                                            color: Colors.black),
+                                            color: Appcolors.primaryTheme),
                                         controller: _reNameController,
                                         decoration: InputDecoration(
                                             filled: true,
                                             fillColor: Colors.white,
-                                            focusedBorder:
-                                                const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.orange,
-                                                        width: 3)),
-                                            enabledBorder:
-                                                const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.orange,
-                                                        width: 3)),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Appcolors
+                                                        .secondaryTheme,
+                                                    width: 3)),
+                                            enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Appcolors
+                                                        .secondaryTheme,
+                                                    width: 3)),
                                             hintText: 'New Video Name',
                                             suffixIcon: IconButton(
                                                 onPressed: () {
                                                   _reNameController.clear();
                                                 },
-                                                icon: const Icon(
+                                                icon: Icon(
                                                   Icons.clear,
-                                                  color: Colors.orange,
+                                                  color:
+                                                      Appcolors.secondaryTheme,
                                                 ))),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -279,10 +281,10 @@ class _VideoListState extends State<VideoList> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           'Cancel',
-                                          style:
-                                              TextStyle(color: Colors.orange),
+                                          style: TextStyle(
+                                              color: Appcolors.secondaryTheme),
                                         ),
                                       ),
                                       TextButton(
@@ -312,10 +314,10 @@ class _VideoListState extends State<VideoList> {
                                             );
                                           }
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           'Rename',
-                                          style:
-                                              TextStyle(color: Colors.orange),
+                                          style: TextStyle(
+                                              color: Appcolors.secondaryTheme),
                                         ),
                                       ),
                                     ],

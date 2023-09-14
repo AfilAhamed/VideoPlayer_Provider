@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 
 class FavoriteControlls extends StatefulWidget {
   final VideoPlayerController _favcontroller;
@@ -93,7 +94,7 @@ class _FavoriteControllsState extends State<FavoriteControlls> {
                             allowScrubbing: true,
                             colors: VideoProgressColors(
                                 backgroundColor: Colors.white,
-                                playedColor: Colors.orange.shade700),
+                                playedColor: Appcolors.secondaryTheme),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 0),
                           ),

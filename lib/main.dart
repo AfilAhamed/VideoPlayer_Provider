@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:videoplayer_miniproject/Screens/mini_Screens/splash_screen.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 import 'package:videoplayer_miniproject/model/favorite_model/favorite_model.dart';
+import 'package:videoplayer_miniproject/view/mini_Screens/splash_screen.dart';
 import 'Model/video_model/video_model.dart';
 
 void main() async {

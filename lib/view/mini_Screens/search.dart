@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import '../../Model/video_model/video_model.dart';
 import '../video/video_play.dart';
 
@@ -32,7 +33,7 @@ class VideoSearchScreenState extends State<VideoSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Appcolors.primaryTheme,
         title: const Text('Search Videos'),
       ),
       body: Column(
@@ -44,26 +45,29 @@ class VideoSearchScreenState extends State<VideoSearchScreen> {
               style: const TextStyle(fontSize: 20),
               onChanged: _performSearch,
               decoration: InputDecoration(
-                focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange, width: 3)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.orange, width: 3)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Appcolors.secondaryTheme, width: 3)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Appcolors.secondaryTheme, width: 3)),
                 border: const OutlineInputBorder(),
                 prefixIcon: Icon(
                   Icons.search_outlined,
-                  color: Colors.orange.shade700,
+                  color: Appcolors.secondaryTheme,
                   size: 30,
                 ),
                 suffixIcon: IconButton(
                     onPressed: () {
                       _searchController.clear();
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.clear,
-                      color: Colors.orange,
+                      color: Appcolors.secondaryTheme,
                     )),
                 hintText: 'Search here...',
-                hintStyle: const TextStyle(color: Colors.black, fontSize: 20),
+                hintStyle: const TextStyle(
+                    color: Appcolors.primaryTheme, fontSize: 20),
               ),
             ),
           ),

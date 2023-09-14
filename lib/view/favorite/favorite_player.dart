@@ -3,19 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
-import 'package:videoplayer_miniproject/screens/video/video_controlls.dart';
-import '../../Model/video_model/video_model.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/model/favorite_model/favorite_model.dart';
+import 'package:videoplayer_miniproject/view/favorite/favorite_controlls.dart';
 
-class VideoPlayerWidget extends StatefulWidget {
-  final VideoModel videoModel;
+class FavoritePlayer extends StatefulWidget {
+  final FavoriteVideoModel favModel;
 
-  const VideoPlayerWidget(this.videoModel, {Key? key}) : super(key: key);
+  const FavoritePlayer(this.favModel, {Key? key}) : super(key: key);
 
   @override
-  VideoPlayerWidgetState createState() => VideoPlayerWidgetState();
+  FavoritePlayerState createState() => FavoritePlayerState();
 }
 
-class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class FavoritePlayerState extends State<FavoritePlayer> {
   late VideoPlayerController _controller;
   bool _controlsVisible = true;
   late Timer _controlsTimer;
@@ -23,12 +24,13 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.file(File(widget.videoModel.videoPath))
+    _controller = VideoPlayerController.file(File(widget.favModel.favvideoPath))
       ..initialize().then((_) {
         _controller.play();
         setState(() {});
       });
-    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+
+    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       setState(() {
         _controlsVisible = false;
       });
@@ -40,7 +42,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       _controlsVisible = !_controlsVisible;
       if (_controlsVisible) {
         _controlsTimer.cancel();
-        _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+        _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
           setState(() {
             _controlsVisible = false;
           });
@@ -52,7 +54,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   //reset the controls timer
   void _resetControlsTimer() {
     _controlsTimer.cancel();
-    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       setState(() {
         _controlsVisible = false;
       });
@@ -64,24 +66,6 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _controller.dispose();
     _controlsTimer.cancel();
     super.dispose();
-  }
-
-  //Double tap function----------------
-
-  void _handleDoubleTap(bool forward) {
-    final currentPosition = _controller.value.position;
-    final seekTime = forward ? 10 : -10;
-    final newPosition = currentPosition + Duration(seconds: seekTime);
-
-    final videoDuration = _controller.value.duration;
-
-    final clampedPosition = newPosition > Duration.zero
-        ? (newPosition < videoDuration ? newPosition : videoDuration)
-        : Duration.zero;
-
-    _controller.seekTo(clampedPosition);
-
-    _resetControlsTimer();
   }
 
   @override
@@ -99,8 +83,6 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         return true; // Allow default back button behavior
       },
       child: GestureDetector(
-        onDoubleTapDown: (details) => _handleDoubleTap(
-            details.localPosition.dx >= MediaQuery.of(context).size.width / 2),
         onTap: () {
           setState(() {
             _toggleControls();
@@ -108,7 +90,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           });
         },
         child: Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: Appcolors.primaryTheme,
           body: Stack(
             children: [
               Padding(
@@ -144,13 +126,13 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                             },
                             icon: const Icon(Icons.arrow_back)),
                         title: Text(
-                          widget.videoModel.name,
+                          widget.favModel.favname,
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
                       Expanded(child: Container()), // Space
 
-                      VideoControls(
+                      FavoriteControlls(
                           _controller), //  video controls class called here
                     ],
                   ),

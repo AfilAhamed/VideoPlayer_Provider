@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:videoplayer_miniproject/screens/settings/about.dart';
-import 'package:videoplayer_miniproject/screens/settings/reset.dart';
-import 'package:videoplayer_miniproject/screens/settings/terms_condition.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
+import 'package:videoplayer_miniproject/view/settings/about.dart';
+import 'package:videoplayer_miniproject/view/settings/reset.dart';
+import 'package:videoplayer_miniproject/view/settings/terms_condition.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -18,7 +19,7 @@ class SettingsScreen extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: const Text('Settings'),
-          backgroundColor: Colors.black,
+          backgroundColor: Appcolors.primaryTheme,
         ),
         body: Center(
           child: Column(
@@ -36,13 +37,13 @@ class SettingsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: MediaQuery.of(context).size.width * 0.6,
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Appcolors.primaryTheme,
                       borderRadius: BorderRadius.circular(50)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.info_outline_rounded,
-                          color: Colors.orange.shade700, size: 33),
+                          color: Appcolors.secondaryTheme, size: 33),
                       const SizedBox(
                         width: 15,
                       ),
@@ -68,13 +69,13 @@ class SettingsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: MediaQuery.of(context).size.width * 0.6,
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Appcolors.primaryTheme,
                       borderRadius: BorderRadius.circular(50)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.sticky_note_2_outlined,
-                          color: Colors.orange.shade700, size: 33),
+                          color: Appcolors.secondaryTheme, size: 33),
                       const SizedBox(
                         width: 2,
                       ),
@@ -100,13 +101,13 @@ class SettingsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: MediaQuery.of(context).size.width * 0.6,
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Appcolors.primaryTheme,
                       borderRadius: BorderRadius.circular(50)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.restart_alt_outlined,
-                          color: Colors.orange.shade700, size: 33),
+                          color: Appcolors.secondaryTheme, size: 33),
                       const SizedBox(
                         width: 10,
                       ),
@@ -132,13 +133,13 @@ class SettingsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: MediaQuery.of(context).size.width * 0.6,
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Appcolors.primaryTheme,
                       borderRadius: BorderRadius.circular(50)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.logout,
-                          color: Colors.orange.shade700, size: 33),
+                          color: Appcolors.secondaryTheme, size: 33),
                       const SizedBox(
                         width: 15,
                       ),

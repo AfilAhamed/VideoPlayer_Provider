@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 
 class TermsConditon extends StatelessWidget {
   const TermsConditon({super.key});
@@ -6,10 +7,10 @@ class TermsConditon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Appcolors.primaryTheme,
       appBar: AppBar(
         toolbarHeight: 60,
-        backgroundColor: Colors.black,
+        backgroundColor: Appcolors.primaryTheme,
         title: const Text(
           "Terms and Conditions",
           style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
