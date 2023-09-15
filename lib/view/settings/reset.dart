@@ -4,7 +4,7 @@ import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 import '../../Model/video_model/video_model.dart';
 import '../../model/favorite_model/favorite_model.dart';
-import '../mini_Screens/splash_screen.dart';
+import '../sub_Screens/splash_screen.dart';
 
 //clear from db - reset
 

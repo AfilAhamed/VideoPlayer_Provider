@@ -5,7 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:videoplayer_miniproject/functions/utility_functions/video_function/video.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
-import 'package:videoplayer_miniproject/view/mini_Screens/search.dart';
+import 'package:videoplayer_miniproject/view/sub_Screens/search.dart';
 import 'package:videoplayer_miniproject/view/video/video_play.dart';
 import 'package:videoplayer_miniproject/functions/db_functions/video_db_function/db_functions.dart';
 import '../../Model/video_model/video_model.dart';
