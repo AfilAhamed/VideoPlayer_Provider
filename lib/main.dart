@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:videoplayer_miniproject/controller/searchcontroller.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 import 'package:videoplayer_miniproject/model/favorite_model/favorite_model.dart';
 import 'package:videoplayer_miniproject/view/sub_Screens/splash_screen.dart';
@@ -32,10 +34,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Video player',
-      home: SplashScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => SearchProvider(),
+        ),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Video player',
+        home: SplashScreen(),
+      ),
     );
   }
 }

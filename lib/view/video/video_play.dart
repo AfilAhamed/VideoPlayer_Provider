@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import 'package:videoplayer_miniproject/bottombar.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/view/video/video_controlls.dart';
 import '../../Model/video_model/video_model.dart';
@@ -141,7 +142,11 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                                 DeviceOrientation.portraitUp,
                                 DeviceOrientation.portraitDown,
                               ]);
-                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const BottomBar(),
+                                  ));
                             },
                             icon: const Icon(Icons.arrow_back)),
                         title: Text(

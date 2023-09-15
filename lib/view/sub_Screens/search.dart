@@ -1,115 +1,116 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
-import '../../Model/video_model/video_model.dart';
+import '../../controller/searchcontroller.dart';
 import '../video/video_play.dart';
 
-class VideoSearchScreen extends StatefulWidget {
-  const VideoSearchScreen({super.key});
+class VideoSearchScreenState extends StatefulWidget {
+  const VideoSearchScreenState({Key? key}) : super(key: key);
 
   @override
-  VideoSearchScreenState createState() => VideoSearchScreenState();
+  VideoSearchScreenStateState createState() => VideoSearchScreenStateState();
 }
 
-class VideoSearchScreenState extends State<VideoSearchScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  List<VideoModel> _searchResults = [];
-
-  void _performSearch(String query) {
-    final videoBox = Hive.box<VideoModel>('videos');
-    final List<VideoModel> allVideos = videoBox.values.toList();
-
-    final List<VideoModel> searchResults = allVideos.where((video) {
-      return video.name.toLowerCase().contains(query.toLowerCase());
-    }).toList();
-
-    setState(() {
-      _searchResults = searchResults;
-    });
-  }
-
+class VideoSearchScreenStateState extends State<VideoSearchScreenState> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Appcolors.primaryTheme,
-        title: const Text('Search Videos'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextFormField(
-              controller: _searchController,
-              style: const TextStyle(fontSize: 20),
-              onChanged: _performSearch,
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Appcolors.secondaryTheme, width: 3)),
-                enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Appcolors.secondaryTheme, width: 3)),
-                border: const OutlineInputBorder(),
-                prefixIcon: Icon(
-                  Icons.search_outlined,
-                  color: Appcolors.secondaryTheme,
-                  size: 30,
-                ),
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      _searchController.clear();
-                    },
-                    icon: Icon(
-                      Icons.clear,
-                      color: Appcolors.secondaryTheme,
-                    )),
-                hintText: 'Search here...',
-                hintStyle: const TextStyle(
-                    color: Appcolors.primaryTheme, fontSize: 20),
-              ),
-            ),
+    return Consumer<SearchProvider>(
+      builder: (context, value, child) {
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Appcolors.primaryTheme,
+            title: const Text('Search Videos'),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  value.clearSearch();
+                },
+                icon: const Icon(Icons.arrow_back)),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                final video = _searchResults[index];
-                return Card(
-                  child: ListTile(
-                    leading: Padding(
-                      padding: const EdgeInsets.only(bottom: 2, top: 2),
-                      child: SizedBox(
-                          height: double.infinity,
-                          width: 80,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(
-                                video.thumbnailPath!,
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          )),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: value.searchController,
+                  style: const TextStyle(fontSize: 20),
+                  onChanged: (query) {
+                    value.performSearch(query);
+                  },
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Appcolors.secondaryTheme, width: 3),
                     ),
-                    horizontalTitleGap: 10,
-                    title: Text(video.name),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VideoPlayerWidget(video),
-                        ),
-                      );
-                    },
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Appcolors.secondaryTheme, width: 3),
+                    ),
+                    border: const OutlineInputBorder(),
+                    prefixIcon: Icon(
+                      Icons.search_outlined,
+                      color: Appcolors.secondaryTheme,
+                      size: 30,
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        value.clearSearch();
+                      },
+                      icon: Icon(
+                        Icons.clear,
+                        color: Appcolors.secondaryTheme,
+                      ),
+                    ),
+                    hintText: 'Search here...',
+                    hintStyle: const TextStyle(
+                        color: Appcolors.primaryTheme, fontSize: 20),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: value.searchResults.length,
+                  itemBuilder: (context, index) {
+                    final video = value.searchResults[index];
+                    return Card(
+                      child: ListTile(
+                        leading: Padding(
+                          padding: const EdgeInsets.only(bottom: 2, top: 2),
+                          child: SizedBox(
+                            height: double.infinity,
+                            width: 80,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(
+                                File(
+                                  video.thumbnailPath!,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                        horizontalTitleGap: 10,
+                        title: Text(video.name),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoPlayerWidget(video),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

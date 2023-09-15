@@ -140,7 +140,8 @@ class _VideoListState extends State<VideoList> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const VideoSearchScreen(),
+                            builder: (context) =>
+                                const VideoSearchScreenState(),
                           ));
                     },
                     icon: Icon(
