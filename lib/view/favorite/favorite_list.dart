@@ -3,127 +3,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:videoplayer_miniproject/controller/favlistcontrolls.dart';
 import 'package:videoplayer_miniproject/functions/db_functions/favorite_db_function/favorite_functions.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/view/favorite/favorite_player.dart';
+import 'package:videoplayer_miniproject/widget/showdailog.dart';
 import '../../model/favorite_model/favorite_model.dart';
 
-class FavoriteVideoList extends StatefulWidget {
+class FavoriteVideoList extends StatelessWidget {
   const FavoriteVideoList({super.key});
 
   @override
-  State<FavoriteVideoList> createState() => _FavoriteVideoListState();
-}
-
-class _FavoriteVideoListState extends State<FavoriteVideoList> {
-  //select and  delete multiple videos function
-  Set<int> favSelectedVideos = Set<int>();
-  bool _isSelecting = false;
-
-  // Function to handle deleting selected videos and multiple videos
-  void _favDeleteSelectedVideos() {
-    final favVideoBox = Hive.box<FavoriteVideoModel>('favorite');
-    final List<int> selectedIndices = favSelectedVideos.toList();
-    selectedIndices.sort((a, b) => b.compareTo(a));
-
-    for (int index in selectedIndices) {
-      final video = favVideoBox.getAt(index);
-      if (video != null) {
-        favVideoBox.deleteAt(index);
-      }
-    }
-    setState(() {
-      _isSelecting = false;
-      favSelectedVideos.clear();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //provider instance
+    final favlistProvider = Provider.of<FavListControlls>(context);
+
     final favoriteVideoBox = Hive.box<FavoriteVideoModel>('Favorite');
     final multipledelete = favoriteVideoBox.values.toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _isSelecting
+      appBar: favlistProvider.isSelectings
           ? AppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: Appcolors.primaryTheme,
-              title: Text('${favSelectedVideos.length} selected'),
+              title:
+                  Text('${favlistProvider.favSelectedVideos.length} selected'),
               actions: <Widget>[
                 IconButton(
                     onPressed: () {
-                      if (_isSelecting) {
-                        setState(() {
-                          _isSelecting = false;
-                          favSelectedVideos.clear();
-                        });
-                      }
+                      favlistProvider.clearSelections();
                     },
                     icon: const Icon(Icons.clear_rounded)),
                 IconButton(
                   icon: const Icon(Icons.select_all),
                   onPressed: () {
-                    setState(() {
-                      if (favSelectedVideos.length == multipledelete.length) {
-                        favSelectedVideos.clear();
-                      } else {
-                        favSelectedVideos = Set<int>.from(List<int>.generate(
-                            multipledelete.length, (i) => i));
-                      }
-                    });
+                    favlistProvider.selectAllVideos(
+                      List<int>.generate(multipledelete.length, (i) => i),
+                    );
                   },
                 ),
                 IconButton(
                   icon: const Icon(
                     Icons.delete,
                   ),
-                  onPressed: favSelectedVideos.isNotEmpty
+                  onPressed: favlistProvider.favSelectedVideos.isNotEmpty
                       ? () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                backgroundColor: Appcolors.primaryTheme,
-                                title: const Text(
-                                  'Delete Selected Videos',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                content: const Text(
-                                  'Are you sure you want to delete the selected videos?',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(
-                                      'Cancel',
-                                      style: TextStyle(
-                                          color: Appcolors.secondaryTheme),
-                                    ),
-                                    onPressed: () {
-                                      if (_isSelecting) {
-                                        setState(() {
-                                          _isSelecting = false;
-                                          favSelectedVideos.clear();
-                                        });
-                                      }
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text(
-                                      'Delete',
-                                      style: TextStyle(
-                                          color: Appcolors.secondaryTheme),
-                                    ),
-                                    onPressed: () {
-                                      _favDeleteSelectedVideos();
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                          showDeleteConfirmationDialog(context, favlistProvider,
+                              () {
+                            favlistProvider.favDeleteSelectedVideos();
+                          });
                         }
                       : null,
                 ),
@@ -147,7 +77,7 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Lottie.asset('assets/images/favorite.json',
+                    Lottie.asset('lib/assets/favorite.json',
                         fit: BoxFit.cover, height: 300),
                     const Text(
                       'No favorite videos',
@@ -170,18 +100,13 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                 },
                 itemBuilder: (context, index) {
                   final favoriteVideo = favoriteVideos[index];
-                  final favIsSelected = favSelectedVideos.contains(index);
+                  final favIsSelected =
+                      favlistProvider.favSelectedVideos.contains(index);
 
                   return GestureDetector(
                     onTap: () {
-                      if (_isSelecting) {
-                        setState(() {
-                          if (favIsSelected) {
-                            favSelectedVideos.remove(index);
-                          } else {
-                            favSelectedVideos.add(index);
-                          }
-                        });
+                      if (favlistProvider.isSelectings) {
+                        favlistProvider.favtoggleSelectedVideos(index);
                       } else {
                         Navigator.push(
                           context,
@@ -192,14 +117,8 @@ class _FavoriteVideoListState extends State<FavoriteVideoList> {
                       }
                     },
                     onLongPress: () {
-                      setState(() {
-                        _isSelecting = true;
-                        if (favIsSelected) {
-                          favSelectedVideos.remove(index);
-                        } else {
-                          favSelectedVideos.add(index);
-                        }
-                      });
+                      favlistProvider.isSelectings = true;
+                      favlistProvider.favtoggleSelectedVideos(index);
                     },
                     child: Slidable(
                       endActionPane:

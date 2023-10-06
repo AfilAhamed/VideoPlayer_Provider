@@ -45,11 +45,11 @@ Future<void> deleteFromDB(BuildContext context, int id) async {
       );
     },
   );
-
+//
   if (confirmDelete == true) {
     await videoDB.deleteAt(id);
   }
-
+// chart deletion update
   final statisticsBox = Hive.box<VideoStatistics>('statistics');
   final now = DateTime.now();
   final period =

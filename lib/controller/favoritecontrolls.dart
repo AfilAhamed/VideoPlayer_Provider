@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoControllss extends ChangeNotifier {
+class FavVideoControlls extends ChangeNotifier {
   bool _isFullscreen = false;
+  bool get isFullscreen => _isFullscreen;
 
-// functio for landscape and portrait
-  void toggleFullscreen() {
+// volume mute and unmute function
+  void toggleVolumee(VideoPlayerController favcontroller) {
+    if (favcontroller.value.volume == 0) {
+      favcontroller.setVolume(1);
+    } else {
+      favcontroller.setVolume(0);
+    }
+    notifyListeners();
+  }
+
+//play and paus button function
+  void togglePlayPause(VideoPlayerController favcontroller) {
+    if (favcontroller.value.isPlaying) {
+      favcontroller.pause();
+    } else {
+      favcontroller.play();
+    }
+    notifyListeners();
+  }
+
+// landscape and portrait  function
+  void favtoggleFullscreen() {
     _isFullscreen = !_isFullscreen;
     if (_isFullscreen) {
       SystemChrome.setPreferredOrientations([
@@ -21,8 +42,8 @@ class VideoControllss extends ChangeNotifier {
     notifyListeners();
   }
 
-// video duration function
-  String videoDurationss(Duration duration) {
+  // video duration function
+  String favvideoDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final hours = twoDigits(duration.inHours);
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -32,25 +53,5 @@ class VideoControllss extends ChangeNotifier {
       minutes,
       seconds,
     ].join(':');
-  }
-
-// mute and unmute function
-  void toggleVolume(VideoPlayerController controller) {
-    if (controller.value.volume == 0) {
-      controller.setVolume(1);
-    } else {
-      controller.setVolume(0);
-    }
-    notifyListeners();
-  }
-
-// play and pause functon
-  void togglePlayPause(VideoPlayerController controller) {
-    if (controller.value.isPlaying) {
-      controller.pause();
-    } else {
-      controller.play();
-    }
-    notifyListeners();
   }
 }

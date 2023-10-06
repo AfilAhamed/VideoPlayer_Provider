@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/model/favorite_model/favorite_model.dart';
 import 'package:videoplayer_miniproject/view/favorite/favorite_controlls.dart';
+import '../../controller/favvideoplayercontroller.dart';
 
 class FavoritePlayer extends StatefulWidget {
   final FavoriteVideoModel favModel;
@@ -18,7 +20,6 @@ class FavoritePlayer extends StatefulWidget {
 
 class FavoritePlayerState extends State<FavoritePlayer> {
   late VideoPlayerController _controller;
-  bool _controlsVisible = true;
   late Timer _controlsTimer;
 
   @override
@@ -27,38 +28,11 @@ class FavoritePlayerState extends State<FavoritePlayer> {
     _controller = VideoPlayerController.file(File(widget.favModel.favvideoPath))
       ..initialize().then((_) {
         _controller.play();
-        setState(() {});
+        final favprovider =
+            Provider.of<FavoritePlayerControllerss>(context, listen: false);
+        favprovider.favUpdate();
+        // setState(() {});
       });
-
-    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      setState(() {
-        _controlsVisible = false;
-      });
-    });
-  }
-
-  void _toggleControls() {
-    setState(() {
-      _controlsVisible = !_controlsVisible;
-      if (_controlsVisible) {
-        _controlsTimer.cancel();
-        _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-          setState(() {
-            _controlsVisible = false;
-          });
-        });
-      }
-    });
-  }
-
-  //reset the controls timer
-  void _resetControlsTimer() {
-    _controlsTimer.cancel();
-    _controlsTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      setState(() {
-        _controlsVisible = false;
-      });
-    });
   }
 
   @override
@@ -70,6 +44,9 @@ class FavoritePlayerState extends State<FavoritePlayer> {
 
   @override
   Widget build(BuildContext context) {
+    //provider instance
+    final favproviderr = Provider.of<FavoritePlayerControllerss>(context);
+
     return WillPopScope(
       onWillPop: () async {
         if (MediaQuery.of(context).orientation == Orientation.landscape) {
@@ -84,10 +61,8 @@ class FavoritePlayerState extends State<FavoritePlayer> {
       },
       child: GestureDetector(
         onTap: () {
-          setState(() {
-            _toggleControls();
-            _resetControlsTimer(); // Restart the timer on every tap
-          });
+          favproviderr.toggleControls();
+          favproviderr.resetControlsTimer();
         },
         child: Scaffold(
           backgroundColor: Appcolors.primaryTheme,
@@ -106,9 +81,9 @@ class FavoritePlayerState extends State<FavoritePlayer> {
               ),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
-                opacity: _controlsVisible ? 1.0 : 0.0,
+                opacity: favproviderr.controlsVisible ? 1.0 : 0.0,
                 child: IgnorePointer(
-                  ignoring: !_controlsVisible,
+                  ignoring: !favproviderr.controlsVisible,
                   child: Column(
                     children: [
                       AppBar(

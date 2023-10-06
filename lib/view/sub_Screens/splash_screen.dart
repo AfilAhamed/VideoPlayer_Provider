@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:videoplayer_miniproject/bottombar.dart';
+import 'package:videoplayer_miniproject/widget/bottombar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/infinity-player-logo (4).png',
+                'lib/assets/infinity-player-logo (4).png',
               ),
               const SizedBox(
                 height: 10,

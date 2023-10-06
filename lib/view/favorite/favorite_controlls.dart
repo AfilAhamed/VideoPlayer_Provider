@@ -1,60 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:videoplayer_miniproject/controller/favoritecontrolls.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 
-class FavoriteControlls extends StatefulWidget {
+class FavoriteControlls extends StatelessWidget {
   final VideoPlayerController _favcontroller;
 
   const FavoriteControlls(this._favcontroller, {super.key});
 
   @override
-  State<FavoriteControlls> createState() => _FavoriteControllsState();
-}
-
-class _FavoriteControllsState extends State<FavoriteControlls> {
-  // screen orientation function
-  bool _isFullscreen = false;
-  void _favtoggleFullscreen() {
-    setState(() {
-      _isFullscreen = !_isFullscreen;
-      if (_isFullscreen) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ]);
-      } else {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-        ]);
-      }
-    });
-  }
-
-  //function for video duration
-  String _favvideoDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(duration.inHours);
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return [
-      if (duration.inHours > 0) hours,
-      minutes,
-      seconds,
-    ].join(':');
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //provider instance
+    final controlprovider =
+        Provider.of<FavVideoControlls>(context, listen: false);
     return Stack(
       children: [
         Positioned.fill(
           child: GestureDetector(
             onTap: () {
-              if (widget._favcontroller.value.isPlaying) {
-                widget._favcontroller.pause();
+              if (_favcontroller.value.isPlaying) {
+                _favcontroller.pause();
               } else {
-                widget._favcontroller.play();
+                _favcontroller.play();
               }
             },
             child: Container(
@@ -78,10 +46,10 @@ class _FavoriteControllsState extends State<FavoriteControlls> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ValueListenableBuilder(
-                          valueListenable: widget._favcontroller,
+                          valueListenable: _favcontroller,
                           builder: (context, VideoPlayerValue value, child) {
                             return Text(
-                              _favvideoDuration(value.position),
+                              controlprovider.favvideoDuration(value.position),
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 15),
                             );
@@ -90,7 +58,7 @@ class _FavoriteControllsState extends State<FavoriteControlls> {
                         child: SizedBox(
                           height: 10,
                           child: VideoProgressIndicator(
-                            widget._favcontroller,
+                            _favcontroller,
                             allowScrubbing: true,
                             colors: VideoProgressColors(
                                 backgroundColor: Colors.white,
@@ -101,7 +69,8 @@ class _FavoriteControllsState extends State<FavoriteControlls> {
                         ),
                       ),
                       Text(
-                        _favvideoDuration(widget._favcontroller.value.duration),
+                        controlprovider
+                            .favvideoDuration(_favcontroller.value.duration),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -110,83 +79,75 @@ class _FavoriteControllsState extends State<FavoriteControlls> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (widget._favcontroller.value.volume == 0) {
-                            widget._favcontroller.setVolume(1);
-                          } else {
-                            widget._favcontroller.setVolume(0);
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        widget._favcontroller.value.volume == 0
-                            ? Icons.volume_off
-                            : Icons.volume_up,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (widget._favcontroller.value.position -
-                                const Duration(seconds: 10) >
-                            Duration.zero) {
-                          widget._favcontroller.seekTo(
-                              widget._favcontroller.value.position -
-                                  const Duration(seconds: 10));
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.replay_10,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (widget._favcontroller.value.isPlaying) {
-                            widget._favcontroller.pause();
-                          } else {
-                            widget._favcontroller.play();
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        widget._favcontroller.value.isPlaying
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (widget._favcontroller.value.position +
-                                const Duration(seconds: 10) <
-                            widget._favcontroller.value.duration) {
-                          widget._favcontroller.seekTo(
-                              widget._favcontroller.value.position +
-                                  const Duration(seconds: 10));
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.forward_10,
-                        color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _favtoggleFullscreen();
-                      },
-                      icon: const Icon(
-                        Icons.screen_rotation_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                Consumer<FavVideoControlls>(
+                  builder: (context, favvideo, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            favvideo.toggleVolumee(_favcontroller);
+                          },
+                          icon: Icon(
+                            _favcontroller.value.volume == 0
+                                ? Icons.volume_off
+                                : Icons.volume_up,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (_favcontroller.value.position -
+                                    const Duration(seconds: 10) >
+                                Duration.zero) {
+                              _favcontroller.seekTo(
+                                  _favcontroller.value.position -
+                                      const Duration(seconds: 10));
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.replay_10,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            favvideo.togglePlayPause(_favcontroller);
+                          },
+                          icon: Icon(
+                            _favcontroller.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            if (_favcontroller.value.position +
+                                    const Duration(seconds: 10) <
+                                _favcontroller.value.duration) {
+                              _favcontroller.seekTo(
+                                  _favcontroller.value.position +
+                                      const Duration(seconds: 10));
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.forward_10,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            favvideo.favtoggleFullscreen();
+                          },
+                          icon: const Icon(
+                            Icons.screen_rotation_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),

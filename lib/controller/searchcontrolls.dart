@@ -10,6 +10,7 @@ class SearchProvider extends ChangeNotifier {
 
   TextEditingController get searchController => _searchController;
 
+// search query function
   void performSearch(String query) {
     final videoBox = Hive.box<VideoModel>('videos');
     final List<VideoModel> allVideos = videoBox.values.toList();
@@ -22,6 +23,7 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+//  clear search
   void clearSearch() {
     _searchController.clear();
     _searchResults.clear();

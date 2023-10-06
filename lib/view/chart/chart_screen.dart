@@ -1,66 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:provider/provider.dart';
+import 'package:videoplayer_miniproject/controller/chartcontrolls.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/model/chart_model/chart_model.dart';
 
-class StatisticsPage extends StatefulWidget {
+class StatisticsPage extends StatelessWidget {
   const StatisticsPage({super.key});
 
   @override
-  StatisticsPageState createState() => StatisticsPageState();
-}
-
-class StatisticsPageState extends State<StatisticsPage> {
-  String selectedPeriod = 'Day'; // Default selection
-
-  @override
   Widget build(BuildContext context) {
+    //provider instance
+    final chartprovider = Provider.of<ChartControlls>(context);
+
     final statisticsBox = Hive.box<VideoStatistics>('statistics');
     final data = statisticsBox.values.toList();
-
-    final filteredData = data.where((statistics) {
-      final today = DateTime.now();
-      final statisticsDate = DateTime.parse(statistics.period);
-
-      if (selectedPeriod == 'Day') {
-        return statisticsDate.isAfter(today.subtract(const Duration(days: 1)));
-      } else if (selectedPeriod == 'Week') {
-        return statisticsDate.isAfter(today.subtract(const Duration(days: 7)));
-      } else if (selectedPeriod == 'Month') {
-        return statisticsDate.isAfter(today.subtract(const Duration(days: 30)));
-      }
-
-      return false;
-    }).toList();
+    final filteredData = chartprovider.filterDataByPeriod(data);
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Appcolors.primaryTheme,
         title: const Text('Video Statistics'),
         actions: [
-          DropdownButton<String>(
-            iconEnabledColor: Appcolors.secondaryTheme,
-            dropdownColor: Appcolors.primaryTheme,
-            iconSize: 27,
-            style: TextStyle(
-                color: Appcolors.secondaryTheme,
-                fontSize: 17,
-                fontWeight: FontWeight.bold),
-            value: selectedPeriod,
-            onChanged: (newValue) {
-              setState(() {
-                selectedPeriod = newValue!;
-              });
-            },
-            items: ['Day', 'Week', 'Month'].map((period) {
-              return DropdownMenuItem<String>(
-                value: period,
-                child: Text(
-                  period,
-                ),
+          Consumer<ChartControlls>(
+            builder: (context, value, child) {
+              return DropdownButton<String>(
+                iconEnabledColor: Appcolors.secondaryTheme,
+                dropdownColor: Appcolors.primaryTheme,
+                iconSize: 27,
+                style: TextStyle(
+                    color: Appcolors.secondaryTheme,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+                value: chartprovider.selectedPeriod,
+                onChanged: (newValue) {
+                  chartprovider.setSelectedPeriod(newValue!);
+                },
+                items: ['Day', 'Week', 'Month'].map((period) {
+                  return DropdownMenuItem<String>(
+                    value: period,
+                    child: Text(
+                      period,
+                    ),
+                  );
+                }).toList(),
               );
-            }).toList(),
+            },
           ),
         ],
       ),

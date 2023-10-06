@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
-import '../../controller/searchcontroller.dart';
+import '../../controller/searchcontrolls.dart';
 import '../video/video_play.dart';
 
 class VideoSearchScreenState extends StatefulWidget {

@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:videoplayer_miniproject/bottombar.dart';
+import 'package:videoplayer_miniproject/controller/videoplayercontrolls.dart';
+import 'package:videoplayer_miniproject/widget/bottombar.dart';
 import 'package:videoplayer_miniproject/helpers/appcolors.dart';
 import 'package:videoplayer_miniproject/view/video/video_controlls.dart';
 import '../../Model/video_model/video_model.dart';
@@ -19,7 +21,6 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _controller;
-  bool _controlsVisible = true;
   late Timer _controlsTimer;
 
   @override
@@ -28,37 +29,11 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _controller = VideoPlayerController.file(File(widget.videoModel.videoPath))
       ..initialize().then((_) {
         _controller.play();
-        setState(() {});
+        final videoPlayerprovider =
+            Provider.of<VideoPlayerControllss>(context, listen: false);
+        videoPlayerprovider.update();
+        // setState(() {});
       });
-    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      setState(() {
-        _controlsVisible = false;
-      });
-    });
-  }
-
-  void _toggleControls() {
-    setState(() {
-      _controlsVisible = !_controlsVisible;
-      if (_controlsVisible) {
-        _controlsTimer.cancel();
-        _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-          setState(() {
-            _controlsVisible = false;
-          });
-        });
-      }
-    });
-  }
-
-  //reset the controls timer
-  void _resetControlsTimer() {
-    _controlsTimer.cancel();
-    _controlsTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      setState(() {
-        _controlsVisible = false;
-      });
-    });
   }
 
   @override
@@ -68,26 +43,11 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.dispose();
   }
 
-  //Double tap function----------------
-
-  void _handleDoubleTap(bool forward) {
-    final currentPosition = _controller.value.position;
-    final seekTime = forward ? 10 : -10;
-    final newPosition = currentPosition + Duration(seconds: seekTime);
-
-    final videoDuration = _controller.value.duration;
-
-    final clampedPosition = newPosition > Duration.zero
-        ? (newPosition < videoDuration ? newPosition : videoDuration)
-        : Duration.zero;
-
-    _controller.seekTo(clampedPosition);
-
-    _resetControlsTimer();
-  }
-
   @override
   Widget build(BuildContext context) {
+    // provider instance
+    final videoPlayerprovider = Provider.of<VideoPlayerControllss>(context);
+
     return WillPopScope(
       onWillPop: () async {
         if (MediaQuery.of(context).orientation == Orientation.landscape) {
@@ -101,13 +61,12 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         return true; // Allow default back button behavior
       },
       child: GestureDetector(
-        onDoubleTapDown: (details) => _handleDoubleTap(
+        onDoubleTapDown: (details) => videoPlayerprovider.handleDoubleTap(
             details.localPosition.dx >= MediaQuery.of(context).size.width / 2),
         onTap: () {
-          setState(() {
-            _toggleControls();
-            _resetControlsTimer(); // Restart the timer on every tap
-          });
+          videoPlayerprovider.toggleControls();
+          videoPlayerprovider
+              .resetControlsTimer(); // Restart the timer on every tap
         },
         child: Scaffold(
           backgroundColor: Appcolors.primaryTheme,
@@ -126,9 +85,9 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               ),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
-                opacity: _controlsVisible ? 1.0 : 0.0,
+                opacity: videoPlayerprovider.controlsVisible ? 1.0 : 0.0,
                 child: IgnorePointer(
-                  ignoring: !_controlsVisible,
+                  ignoring: !videoPlayerprovider.controlsVisible,
                   child: Column(
                     children: [
                       AppBar(
